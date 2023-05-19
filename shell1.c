@@ -53,38 +53,12 @@ int main(int ac, char **argv)
 	}
 	argv[i] = NULL;
 
-	printf("%s\n", lineptr);
 
 	execmd(argv);
-	
-	if (lineptr != NULL)
-	{
-		free(lineptr);
-		lineptr = NULL;
-	}
-	if (lineptr_copy != NULL)
-	{
-		free(lineptr_copy);
-		lineptr_copy = NULL;
 	}
 	
-	for (i = 0; i < num_tokens - 1; i++)
-	{
-		if (argv[i] != NULL)
-		{
-			free(argv[i]);
-			argv[i] = NULL;
-		}
-	}
-	}
-	if (lineptr != NULL)
-	{
-		free(lineptr);
-	}
-	if (argv != NULL)
-	{
-		free(argv);
-	}
+	free(lineptr_copy);
+	free(lineptr);
 
 	return (0);
 }
