@@ -10,81 +10,80 @@
 #define PATH_DELIMITER ":"
 
 /**
- *  * prompt - Displays the shell prompt
- *   */
+ * prompt - Displays the shell prompt
+ */
 void prompt(void)
 {
 	    printf("$ ");
 }
 
 /**
- *  * execute_command - Executes the given command with arguments
- *   * @command: The command to execute
- *    * @args: Array of command arguments
- *     * @path: The PATH environment variable
- *      */
+ * execute_command - Executes the given command with arguments
+ * @command: The command to execute
+ * @args: Array of command arguments
+ * @path: The PATH environment variable
+ */
 void execute_command(char *command, char **args, char *path)
 {
-	    char *full_path;
-	        pid_t pid;
-		    int status;
-
-		        if (access(command, F_OK) == 0)
-				    {
-					            /* Command exists in the current directory */
-					            full_path = command;
-						        }
-			    else
-				        {
-						        /* Search for the command in the PATH */
-						        char *token;
-
-							        token = strtok(path, PATH_DELIMITER);
-								        while (token)
-										        {
-												            full_path = malloc(strlen(token) + strlen(command) + 2);
-													                sprintf(full_path, "%s/%s", token, command);
-
-															            if (access(full_path, F_OK) == 0)
-																	                    break;
-
-																                free(full_path);
-																		            full_path = NULL;
+	char *full_path;
+	pid_t pid;
+	int status;
+	if (access(command, F_OK) == 0)
+	{
+	/* Command exists in the current directory */
+		full_path = command;
+	}
+	else
+	{
+	 /* Search for the command in the PATH */
+		char *token;
+		token = strtok(path, PATH_DELIMITER);
+		while (token)
+		{
+											            full_path = malloc(strlen(token) + strlen(command) + 2);
+												    
+												    sprintf(full_path, "%s/%s", token, command);
+										            if (access(full_path, F_OK) == 0)
+												    break;
+											    free(full_path);
+											    full_path = NULL;
 
 																			                token = strtok(NULL, PATH_DELIMITER);
-																					        }
-									    }
+		}
+	}
+if (full_path == NULL)
+{
+         printf("%s: command not found\n", command);
+         return;
+}
 
-			        if (full_path == NULL)
-					    {
-						            printf("%s: command not found\n", command);
-							            return;
-								        }
+pid = fork();
+if (pid == 0)
+{
+/* Child process */
+if (execv(full_path, args) == -1)
 
-				    pid = fork();
-				        if (pid == 0)
-						    {
-							            /* Child process */
-							            if (execv(full_path, args) == -1)
-									            {
-											                perror("Error");
-													            exit(EXIT_FAILURE);
-														            }
-								        }
-					    else if (pid < 0)
-						        {
-								        /* Fork failed */
-								        perror("Error");
-									        exit(EXIT_FAILURE);
-										    }
-					        else
-							    {
-								            /* Parent process */
-								            do
+{
+	perror("Error");
+	exit(EXIT_FAILURE);
+}
+}
+else if (pid < 0)
+{
+/* Fork failed */
+perror("Error");
+exit(EXIT_FAILURE);
+}
+else
+{
+/* Parent process */
+do
 										            {
-												                waitpid(pid, &status, WUNTRACED);
-														        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-									        }
+												    waitpid(pid, &status, WUNTRACED);
+											    }
+while (!WIFEXITED(status) && !WIFSIGNALED(status));
+									        
+}
 
 						    free(full_path);
 }

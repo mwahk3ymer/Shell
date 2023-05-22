@@ -25,7 +25,7 @@ int main(int ac, char **argv)
 	}
 
 	lineptr_copy = malloc(sizeof(char) * nchars_read);
-	if (lineptr_copy== NULL)
+	if (lineptr_copy == NULL)
 	{
 		perror("tsh: memory allocation error");
 		return (-1);
@@ -57,8 +57,15 @@ int main(int ac, char **argv)
 	execmd(argv);
 	}
 	
+	for (i = 0; i < num_tokens; i++)
+	{
+		free(argv[i]);
+	}
+	free(argv);
+
 	free(lineptr_copy);
 	free(lineptr);
+}
 
 	return (0);
 }
