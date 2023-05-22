@@ -60,50 +60,50 @@ void execute_command(char *command, char **args)
  */
 void parse_command(char *buffer, char **command, char **args)
 {
-	    *command = strtok(buffer, TOKEN_DELIMITERS);
+*command = strtok(buffer, TOKEN_DELIMITERS);
 
-	        if (*command != NULL)
-			    {
-				            int i = 0;
-					            char *token;
+if (*command != NULL)
+{
+int i = 0;
+char *token;
 
-						            args[i++] = *command;
+args[i++] = *command;
 
-							            while ((token = strtok(NULL, TOKEN_DELIMITERS)))
-									            {
-											                args[i++] = token;
-													        }
+while ((token = strtok(NULL, TOKEN_DELIMITERS)))
+{
 
-								            args[i] = NULL;
-									        }
+	args[i++] = token;
+}
+args[i] = NULL;
+}
 }
 
 /**
- *  * main - Entry point of the shell
- *   *
- *    * Return: Always 0
- *     */
+ * main - Entry point of the shell
+ *
+ * Return: Always 0
+ */
 int main(void)
 {
-	    char buffer[BUFFER_SIZE];
-	        char *command;
-		    char *args[BUFFER_SIZE];
-
-		        while (1)
-				    {
-					            prompt();
-
-						            if (fgets(buffer, BUFFER_SIZE, stdin) == NULL)
-								            {
-										                printf("\n");
-												            break;
-													            }
-
-							            parse_command(buffer, &command, args);
-
-								            if (command != NULL)
-										                execute_command(command, args);
-									        }
-
-			    return 0;
+	char buffer[BUFFER_SIZE];
+	char *command;
+	char *args[BUFFER_SIZE];
+	
+	while (1)
+	{
+		prompt();
+		if (fgets(buffer, BUFFER_SIZE, stdin) == NULL)
+		{
+			printf("\n");
+			
+			break;
+		
+		}
+		
+		parse_command(buffer, &command, args);
+		if (command != NULL)
+			execute_command(command, args);
+	}
+	
+	return 0;
 }
