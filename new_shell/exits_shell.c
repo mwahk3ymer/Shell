@@ -15,9 +15,10 @@ void execute_command(char *command)
 
 	if (strcmp(command, "exit") == 0)
 	{
+		printf("exiting shell..\n");
 		exit(0);
 	}
-	printf("uknown cd: %s\n", command);
+	printf("unknown cd: %s\n", command);
 }
 
 int main()

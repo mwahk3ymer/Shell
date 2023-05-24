@@ -43,12 +43,11 @@ void execute_command(char *command, char **args, char *path)
 											            full_path = malloc(strlen(token) + strlen(command) + 2);
 												    
 												    sprintf(full_path, "%s/%s", token, command);
-										            if (access(full_path, F_OK) == 0)
+												    if (access(full_path, F_OK) == 0)
 												    break;
-											    free(full_path);
-											    full_path = NULL;
-
-																			                token = strtok(NULL, PATH_DELIMITER);
+												    free(full_path);
+												    full_path = NULL;
+												    token = strtok(NULL, PATH_DELIMITER);
 		}
 	}
 if (full_path == NULL)
@@ -78,69 +77,71 @@ else
 {
 /* Parent process */
 do
-										            {
-												    waitpid(pid, &status, WUNTRACED);
-											    }
+{
+
+	waitpid(pid, &status, WUNTRACED);
+}
 while (!WIFEXITED(status) && !WIFSIGNALED(status));
 									        
 }
 
-						    free(full_path);
+free(full_path)
 }
 
 /**
- *  * parse_command - Parses the command line and returns the command and its arguments
- *   * @buffer: The command line buffer
- *    * @command: Pointer to store the command
- *     * @args: Array to store the command arguments
- *      */
+ * parse_command - Parses the command line and returns the command and its arguments
+ * @buffer: The command line buffer
+ * @command: Pointer to store the command
+ * @args: Array to store the command arguments
+ */
 void parse_command(char *buffer, char **command, char **args)
 {
-	    *command = strtok(buffer, TOKEN_DELIMITERS);
+*command = strtok(buffer, TOKEN_DELIMITERS);
 
-	        if (*command != NULL)
-			    {
-				            int i = 0;
-					            char *token;
+if (*command != NULL)
+{
+int i = 0;
+char *token;
+args[i++] = *command;
+while ((token = strtok(NULL, TOKEN_DELIMITERS)))
+{
 
-						            args[i++] = *command;
+args[i++] = token;
 
-							            while ((token = strtok(NULL, TOKEN_DELIMITERS)))
-									            {
-											                args[i++] = token;
-													        }
-
-								            args[i] = NULL;
-									        }
+}
+args[i] = NULL;
+}
 }
 
 /**
- *  * main - Entry point of the shell
- *   *
- *    * Return: Always 0
- *     */
+ * main - Entry point of the shell
+ *
+ * Return: Always 0
+ */
 int main(void)
 {
-	    char buffer[BUFFER_SIZE];
-	        char *command;
-		    char *args[BUFFER_SIZE];
-		        char *path = getenv("PATH");
+char buffer[BUFFER_SIZE];
+char *command;
+char *args[BUFFER_SIZE];
+char *path = getenv("PATH");
 
-			    while (1)
-				        {
-						        prompt();
+while (1)
+{
+prompt();
 
-							        if (fgets(buffer, BUFFER_SIZE, stdin) == NULL)
-									        {
-											            printf("\n");
-												                break;
-														        }
+if (fgets(buffer, BUFFER_SIZE, stdin) == NULL)
+{
 
-								        parse_command(buffer, &command, args);
+printf("\n");
 
-									        if (command != NULL)
-											            execute_command(command, args, path);
-										    }
+break;
 
-			        return 0;
+}
+parse_command(buffer, &command, args);
+if (command != NULL)
+
+execute_command(command, args, path);
+}
+
+return 0;
 }

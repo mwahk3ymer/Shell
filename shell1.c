@@ -15,13 +15,22 @@ int main(int ac, char **argv)
 
 	while (1)
 	{
-	printf("%s", prompt);
+	printf("%s",prompt);
+
 	nchars_read = getline(&lineptr, &n, stdin);
 
 	if(nchars_read == -1) 
 	{
+		if(feof(stdin))
+		{
 		printf("exiting shel...\n");
-		return (-1);
+		break;
+		}
+		else
+		{
+			perror("getline");
+			continue;
+		}
 	}
 
 	lineptr_copy = malloc(sizeof(char) * nchars_read);
@@ -56,15 +65,11 @@ int main(int ac, char **argv)
 
 	execmd(argv);
 	}
-	
-	for (i = 0; i < num_tokens; i++)
-	{
-		free(argv[i]);
-	}
-	free(argv);
 
 	free(lineptr_copy);
 	free(lineptr);
+
+	
 
 
 	return (0);

@@ -26,54 +26,55 @@ void execute_command(char *command)
 
 	pid = fork();
 	if (pid == 0)
-	{
-					            /* Child process */
-					            if (execvp(command, &command) == -1)
-							            {
-									                perror("Error");
-											            exit(EXIT_FAILURE);
-												            }
-						        }
-			    else if (pid < 0)
-				        {
-						        /* Fork failed */
-						        perror("Error");
-							        exit(EXIT_FAILURE);
-								    }
-			        else
-					    {
-						            /* Parent process */
-						            do
-								            {
-										                waitpid(pid, &status, WUNTRACED);
-												        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
-							        }
+{
+/* Child process */
+if (execvp(command, &command) == -1)
+{
+perror("Error");
+exit(EXIT_FAILURE);
+}
+}
+else if (pid < 0)
+{
+/* Fork failed */
+perror("Error");
+exit(EXIT_FAILURE);
+}
+else
+{
+/* Parent process */
+do
+{
+waitpid(pid, &status, WUNTRACED);
+}
+while (!WIFEXITED(status) && !WIFSIGNALED(status));
+}
 }
 
 /**
- *  * main - Entry point of the shell
- *   *
- *    * Return: Always 0
- *     */
+ * main - Entry point of the shell
+ *
+ * Return: Always 0
+ */
 int main(void)
 {
-	    char buffer[BUFFER_SIZE];
-	        char *command;
+char buffer[BUFFER_SIZE];
+char *command;
 
-		    while (1)
-			        {
-					        prompt();
+while (1)
+{
+prompt();
 
-						        if (fgets(buffer, BUFFER_SIZE, stdin) == NULL)
-								        {
-										            printf("\n");
-											                break;
-													        }
+if (fgets(buffer, BUFFER_SIZE, stdin) == NULL)
+{
+printf("\n");
+break;
 
-							        command = strtok(buffer, " \t\n");
-								        if (command != NULL)
-										            execute_command(command);
-									    }
+}
 
-		        return 0;
+command = strtok(buffer, " \t\n");
+if (command != NULL)
+execute_command(command);
+}
+return (0);
 }
