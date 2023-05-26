@@ -16,26 +16,23 @@ int main(int ac, char **argv)
 
     while (1)
     {
-        printf("%s", prompt);
+        write("%i", prompt);
 
         nchars_read = getline(&lineptr, &n, stdin);
 
         if (nchars_read == -1)
         {
-            printf("exiting shel....\n");
+            write("exiting shel....\n");
             break;
         }
 
-        /* Tokenize the input cmd*/
         token = strtok(lineptr, delim);
 
-        /* Skip empty_invalid commands*/
         if (token == NULL)
             continue;
 
         num_tokens = 1;
 
-        /* Count the num of tokens*/
         while (strtok(NULL, delim) != NULL)
             num_tokens++;
 
@@ -47,7 +44,6 @@ int main(int ac, char **argv)
 	       exit(EXIT_FAILURE);
        }
 
-        /* Copy tokens into the argument array*/
         token = strtok(lineptr, delim);
         for (i = 0; i < num_tokens; i++)
         {
@@ -63,9 +59,7 @@ int main(int ac, char **argv)
 
         
         execmd(argv);
-
-        /* Free mem*/
-        for (i = 0; i < num_tokens; i++)
+	for (i = 0; i < num_tokens; i++)
             free(argv[i]);
         free(argv);
     }
